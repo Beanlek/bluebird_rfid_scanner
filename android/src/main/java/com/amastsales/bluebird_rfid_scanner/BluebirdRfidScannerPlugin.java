@@ -224,6 +224,7 @@ public class BluebirdRfidScannerPlugin implements FlutterPlugin, MethodCallHandl
     private BluebirdRfidScannerPlugin eContext;
     private String eChannel;
     private Boolean eTriggerActivity;
+    private volatile Boolean isListening = false;
 
 
     public EventChannelHandler(BluebirdRfidScannerPlugin context, String channel) {
@@ -236,9 +237,10 @@ public class BluebirdRfidScannerPlugin implements FlutterPlugin, MethodCallHandl
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
       eSink = events;
+      isListening = true;
 
       new Thread(() -> {
-        while(true) {
+        while(isListening) {
           switch (eChannel) {
             case EVENT_PerformInventory:
               if (D) Log.d(TAG, EVENT_PerformInventory);
@@ -282,6 +284,7 @@ public class BluebirdRfidScannerPlugin implements FlutterPlugin, MethodCallHandl
 
     @Override
     public void onCancel(Object arguments) {
+      isListening = false;
       eSink = null;
     }
   }
