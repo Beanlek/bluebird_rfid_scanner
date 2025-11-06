@@ -1051,7 +1051,7 @@ public class BluebirdRfidScannerHelper {
             mSoundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> {
                 mSoundFileLoadState = true;
             });
-            mSoundId = loadBeepFromFlutterAssets("assets/beep.mp3");
+            mSoundId = loadBeepFromFlutterAssets("assets/raw/beep.mp3");
         }
     }
 
