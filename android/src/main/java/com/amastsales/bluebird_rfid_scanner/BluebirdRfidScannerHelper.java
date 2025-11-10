@@ -129,7 +129,9 @@ public class BluebirdRfidScannerHelper {
         if (D) Log.d(TAG, "initReader");
 
         boolean openResult = false;
-        boolean isConnected = false;
+        // boolean isConnected = false;
+
+        int isConnectedState = 1;
 
         mReader = Reader.getReader(mContext, mConnectivityHandler);
         if (mReader != null)
@@ -137,15 +139,20 @@ public class BluebirdRfidScannerHelper {
         if (openResult == SDConsts.SD_OPEN_SUCCESS) {
             Log.i(TAG, "Reader opened");
             modelIDStr = (mReader.SD_GetModel() == SDConsts.MODEL.RFR900) ? "RFR900" : "RFR901";
-            if (mReader.SD_GetConnectState() == SDConsts.SDConnectState.CONNECTED)
-                isConnected = true;
-        } else if (openResult == SDConsts.RF_OPEN_FAIL)
+            if (mReader.SD_GetConnectState() == SDConsts.SDConnectState.CONNECTED) {
+                // isConnected = true;
+                isConnectedState = 0;
+            }
+        } else if (openResult == SDConsts.RF_OPEN_FAIL) {
             if (D) Log.e(TAG, "Reader open failed");
+            // isConnected = false;
+            isConnectedState = 2;
+        }
 
         mAdapter = new TagListAdapter(mContext);
         mRfidList = new ListNoView(mContext);
 
-        updateConnectState(isConnected);
+        updateConnectState(isConnectedState);
 
         createSoundPool();
     }
@@ -187,7 +194,7 @@ public class BluebirdRfidScannerHelper {
         if (D) Log.d(TAG, "disconnect result = " + ret);
         if (ret == SDConsts.SDConnectState.DISCONNECTED || ret == SDConsts.SDConnectState.ALREADY_DISCONNECTED ||
                 ret == SDConsts.SDConnectState.ACCESS_TIMEOUT) {
-            updateConnectState(false);
+            updateConnectState(1);
         }
 
         return Objects.equals(getConnectState(), "Disconnected");
@@ -252,7 +259,7 @@ public class BluebirdRfidScannerHelper {
                         mMessage = " " + "SD_Connect " + ret;
 
                         if (ret == SDConsts.SDResult.SUCCESS || ret == SDConsts.SDResult.ALREADY_CONNECTED) {
-                            updateConnectState(true);
+                            updateConnectState(0);
                         }
                     }
                     else {
@@ -262,7 +269,7 @@ public class BluebirdRfidScannerHelper {
                 }
                 else if (m.arg1 == SDConsts.SDCmdMsg.SLED_UNKNOWN_DISCONNECTED) {
                     mMessage = " " + "SLED_UNKNOWN_DISCONNECTED";
-                    updateConnectState(false);
+                    updateConnectState(2);
                 }
                 //+Always be display Battery
                 else if (m.arg1 == SDConsts.SDCmdMsg.SLED_BATTERY_STATE_CHANGED) {
@@ -874,16 +881,28 @@ public class BluebirdRfidScannerHelper {
         }
     }
 
-    private void updateConnectState(boolean b) {
-        if (b) {
-            mConnectState = "Connected";
-            if (mOptionHandler != null)
-                mOptionHandler.obtainMessage(BluebirdRfidScannerPlugin.MSG_OPTION_CONNECTED).sendToTarget();
-        }
-        else {
-            mConnectState = "Disconnected";
-            if (mOptionHandler != null)
-                mOptionHandler.obtainMessage(BluebirdRfidScannerPlugin.MSG_OPTION_DISCONNECTED).sendToTarget();
+    private void updateConnectState(int i) {
+        switch (i) {
+            case 0 :
+                mConnectState = "Connected";
+                if (mOptionHandler != null)
+                    mOptionHandler.obtainMessage(BluebirdRfidScannerPlugin.MSG_OPTION_CONNECTED).sendToTarget();
+
+                break;
+            case 1 :
+                mConnectState = "Disconnected";
+                if (mOptionHandler != null)
+                    mOptionHandler.obtainMessage(BluebirdRfidScannerPlugin.MSG_OPTION_DISCONNECTED).sendToTarget();
+
+                break;
+            case 2 :
+                mConnectState = "Undetected";
+                if (mOptionHandler != null)
+                    mOptionHandler.obtainMessage(BluebirdRfidScannerPlugin.MSG_OPTION_UNDETECTED).sendToTarget();
+
+                break;
+
+
         }
     }
 
@@ -1090,15 +1109,15 @@ public class BluebirdRfidScannerHelper {
 
         if (ret == SDConsts.SDConnectState.CONNECTED) {
             if (D) Log.d(TAG, "connected");
-            updateConnectState(true);
+            updateConnectState(0);
         }
         else if (ret == SDConsts.SDConnectState.DISCONNECTED) {
             if (D) Log.d(TAG, "disconnected");
-            updateConnectState(false);
+            updateConnectState(1);
         }
         else {
             if (D) Log.d(TAG, "other state");
-            updateConnectState(false);
+            updateConnectState(2);
         }
 
         if (D) Log.d(TAG, "connect state = " + ret);

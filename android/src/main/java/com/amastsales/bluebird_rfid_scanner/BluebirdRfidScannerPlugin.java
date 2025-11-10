@@ -39,6 +39,8 @@ public class BluebirdRfidScannerPlugin implements FlutterPlugin, MethodCallHandl
 
   public static final int MSG_OPTION_DISCONNECTED = 0;
 
+  public static final int MSG_OPTION_UNDETECTED = -1;
+
   public static final int MSG_OPTION_CONNECTED = 1;
 
   public static final int MSG_BACK_PRESSED = 2;
