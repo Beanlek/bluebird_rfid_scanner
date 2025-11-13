@@ -264,7 +264,8 @@ public class BluebirdRfidScannerPlugin implements FlutterPlugin, MethodCallHandl
 
                 if (activity != null && eSink != null) {
                   activity.runOnUiThread(() -> {
-                    eSink.success(list);
+                    if (eSink != null)
+                      eSink.success(list);
                   });
                 }
 
