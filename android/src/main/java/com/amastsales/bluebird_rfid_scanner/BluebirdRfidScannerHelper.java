@@ -1137,7 +1137,12 @@ public class BluebirdRfidScannerHelper {
         int power = mReader.RF_GetRadioPowerState();
         if (D) Log.d(TAG, "f power: " + power);
 
-        mScanPower = power;
+        if(Objects.equals(mConnectState, "Connected") && power == -5) {
+            if (D) Log.d(TAG, "fGet mScanPower: " + mScanPower);
+            mReader.RF_SetRadioPowerState(mScanPower);
+        } else {
+            mScanPower = power;
+        }
 
         if (D) Log.d(TAG, "power level = " + mScanPower);
     }

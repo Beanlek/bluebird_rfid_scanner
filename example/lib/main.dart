@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
   final _bluebirdRfidScannerPlugin = BluebirdRfidScanner();
   bool _loading = false;
   int _sliderValue = 5;
-  int _currentPower = 1;
+  int _currentPower = 5;
 
   String _connectStatus = 'Unknown';
   bool _connected = false;
@@ -107,6 +107,9 @@ class _MyAppState extends State<MyApp> {
                                 await _bluebirdRfidScannerPlugin.getConnectState().then((res) => setState(() {
                                   _connectStatus = res ?? 'Null';
                                 }));
+                                await _bluebirdRfidScannerPlugin.getScanPower().then((res) {
+                                  _currentPower = res ?? -1;
+                                });
                   
                                 setState(() => _loading = false);
                               },
