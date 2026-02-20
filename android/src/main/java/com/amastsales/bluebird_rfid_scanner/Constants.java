@@ -14,6 +14,12 @@ public class Constants {
     public static final String BB_PW = "11112222";
     public static final String PRIVATE_SUFFIX_PW = "0002";
     public static final String REVIVE_SUFFIX_PW = "0000";
+    // POWER
+    public static final int POWER_ZERO = 0;
+    public static final int POWER_LOW = 5;
+    public static final int POWER_MED = 10;
+    public static final int POWER_HI = 20;
+    public static final int POWER_MAX = 30;
 
     public static class EncodeMode {
         public static final int MASS = 0;

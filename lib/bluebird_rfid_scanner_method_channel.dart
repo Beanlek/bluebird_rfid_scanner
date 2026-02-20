@@ -62,6 +62,23 @@ class MethodChannelBluebirdRfidScanner extends BluebirdRfidScannerPlatform {
   // set scanner mode
 
   // set power level
+  @override
+  Future<bool?> setScanPower(int scanPower) async {
+    final result = await methodChannel.invokeMethod('setScanPower',
+      {
+        "scanPower": scanPower
+      }
+    );
+
+    return result;
+  }
+
+  // get power level
+  @override
+  Future<int?> getScanPower() async {
+    final result = await methodChannel.invokeMethod<int>('getScanPower');
+    return result;
+  }
 
   // set scanner name
 }

@@ -40,6 +40,14 @@ class BluebirdRfidScanner {
   // set scanner mode
 
   // set power level
+  Future<bool?> setScanPower(int scanPower) {
+    return BluebirdRfidScannerPlatform.instance.setScanPower(scanPower);
+  }
+
+  // get power level
+  Future<int?> getScanPower() {
+    return BluebirdRfidScannerPlatform.instance.getScanPower();
+  }
 
   // set scanner name
 }

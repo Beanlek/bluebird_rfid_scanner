@@ -74,6 +74,7 @@ public class BluebirdRfidScannerHelper {
     private String mTimerText;
     private String mSuccess;
     private String mFail;
+    private int mScanPower = Constants.POWER_HI;
     private String mConnectState;
     private String modelIDStr;
     private CopyOnWriteArrayList<Constants.EPCItem> mInditexTagINFOList;
@@ -211,6 +212,16 @@ public class BluebirdRfidScannerHelper {
         if (D) Log.d("getTriggerActivity", String.valueOf(mTriggerActivity));
 
         return mTriggerActivity;
+    }
+    public int getScanPower() {
+        fGetScanPower();
+
+        return mScanPower;
+    }
+    public void setScanPower(int scanPower) {
+        mScanPower = scanPower;
+
+        fSetScanPower();
     }
 
     public List<ListItem> performInventory() {
@@ -1121,6 +1132,19 @@ public class BluebirdRfidScannerHelper {
         }
 
         if (D) Log.d(TAG, "connect state = " + ret);
+    }
+    private void fGetScanPower() {
+        int power = mReader.RF_GetRadioPowerState();
+        if (D) Log.d(TAG, "f power: " + power);
+
+        mScanPower = power;
+
+        if (D) Log.d(TAG, "power level = " + mScanPower);
+    }
+    private void fSetScanPower() {
+        mReader.RF_SetRadioPowerState(mScanPower);
+
+        if (D) Log.d(TAG, "power level = " + String.valueOf(mScanPower));
     }
 
     // -- PRIVATE CLASS

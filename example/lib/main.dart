@@ -19,6 +19,8 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _bluebirdRfidScannerPlugin = BluebirdRfidScanner();
   bool _loading = false;
+  int _sliderValue = 5;
+  int _currentPower = 1;
 
   String _connectStatus = 'Unknown';
   bool _connected = false;
@@ -38,6 +40,10 @@ class _MyAppState extends State<MyApp> {
       await _bluebirdRfidScannerPlugin.initReader();
       
       platformVersion = await _bluebirdRfidScannerPlugin.getPlatformVersion() ?? 'Unknown platform version';
+
+      await _bluebirdRfidScannerPlugin.getScanPower().then((res) {
+        _currentPower = res ?? -1;
+      });
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -225,6 +231,42 @@ class _MyAppState extends State<MyApp> {
                       );
                     }
                   )
+                ),
+
+                Expanded(
+                  child: Center(
+                    child: Text('Current Power: $_currentPower\n'),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Slider value: $_sliderValue'),
+                      Slider(
+                        min: 5,
+                        max: 50,
+                        divisions: 45,
+                        value: _sliderValue.toDouble(),
+                        label: _sliderValue.toString(),
+                        onChanged: (value) {
+                          setState(() {
+                            _sliderValue = value.round();
+                          });
+
+                          _bluebirdRfidScannerPlugin.setScanPower(_sliderValue);
+
+                          _bluebirdRfidScannerPlugin
+                              .getScanPower()
+                              .then((res) {
+                                    _currentPower = res ?? -1;
+                                  });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 
                 

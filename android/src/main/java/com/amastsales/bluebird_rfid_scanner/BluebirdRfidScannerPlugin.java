@@ -196,6 +196,41 @@ public class BluebirdRfidScannerPlugin implements FlutterPlugin, MethodCallHandl
 
         break;
 
+      case CHANNEL_GetScanPower:
+        if (D) Log.d(TAG,CHANNEL_GetScanPower);
+
+        try {
+          final int res = helper.getScanPower();
+
+          result.success(res);
+        } catch (Exception e) {
+          if (D) Log.d(TAG, CHANNEL_GetScanPower);
+          result.error(TAG, CHANNEL_GetScanPower, e.toString());
+        }
+
+        break;
+
+      case CHANNEL_SetScanPower:
+        if (D) Log.d(TAG,CHANNEL_SetScanPower);
+
+        final int scanPower = call.argument("scanPower");
+        if (D) Log.d(TAG, "Int ScanPower" + scanPower);
+
+        if (scanPower > Constants.POWER_ZERO && scanPower <= Constants.POWER_MAX) {
+          result.success(false);
+        }
+
+        try {
+          helper.setScanPower(scanPower);
+
+          result.success(true);
+        } catch (Exception e) {
+          if (D) Log.d(TAG, CHANNEL_SetScanPower);
+          result.error(TAG, CHANNEL_SetScanPower, e.toString());
+        }
+
+        break;
+
       default:
         result.notImplemented();
     }
@@ -213,6 +248,8 @@ public class BluebirdRfidScannerPlugin implements FlutterPlugin, MethodCallHandl
   private static final String CHANNEL_Disconnect = "disconnect";
   private static final String CHANNEL_GetConnectState = "getConnectState";
   private static final String CHANNEL_ClearInventory = "clearInventory";
+  private static final String CHANNEL_SetScanPower = "setScanPower";
+  private static final String CHANNEL_GetScanPower = "getScanPower";
 
 
   // -- event channels

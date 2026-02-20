@@ -61,6 +61,14 @@ abstract class BluebirdRfidScannerPlatform extends PlatformInterface {
   // set scanner mode
 
   // set power level
+  Future<bool?> setScanPower(int scanPower) {
+    throw UnimplementedError('setScanPower() has not been implemented.');
+  }
+
+  // get power level
+  Future<int?> getScanPower() {
+    throw UnimplementedError('getScanPower() has not been implemented.');
+  }
 
   // set scanner name
 }
